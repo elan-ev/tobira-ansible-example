@@ -1,0 +1,4 @@
+---
+- ansible.builtin.import_tasks: meili.yml
+- ansible.builtin.import_tasks: db.yml
+- ansible.builtin.import_tasks: tobira.yml

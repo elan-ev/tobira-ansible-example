@@ -1,0 +1,19 @@
+---
+
+- name: restart tobira
+  service:
+    name: '{{ item }}'
+    state: restarted
+  with_items:
+    - tobira
+    - tobira-worker
+
+- name: restart meili
+  service:
+    name: meili
+    state: restarted
+
+- name: restart postgresql
+  service:
+    name: postgresql
+    state: restarted

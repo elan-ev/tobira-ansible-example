@@ -1,0 +1,18 @@
+[Unit]
+Description=MeiliSearch
+Documentation=https://docs.meilisearch.com/
+
+After=local-fs.target
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/meili
+# You decide, see https://docs.meilisearch.com/learn/what_is_meilisearch/telemetry.html
+#Environment="MEILI_NO_ANALYTICS=true"
+Environment="MEILI_MASTER_KEY={{ tobira_meili_key }}"
+Environment="MEILI_HTTP_PAYLOAD_SIZE_LIMIT=20Gb"
+ExecStart=/opt/meili/meilisearch
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

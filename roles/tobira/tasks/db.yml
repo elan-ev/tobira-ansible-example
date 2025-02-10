@@ -1,0 +1,39 @@
+---
+# Installs a local PostgreSQL server for Tobira
+
+- name: install PostgreSQL
+  package:
+    state: present
+    name:
+      - postgresql # This is the package for Ubuntu, adjust if necessary
+      - python3-psycopg2 # Required for `community.postgresql` commands below
+      # - postgresql-contrib
+      # - python3
+      # - nginx
+      # - nodejs
+
+# This is necessary for non-Debian systems (which use dnf or yum)
+# - name: initialize PostgreSQL
+#   command:
+#     cmd: postgresql-setup --initdb
+#     creates: /var/lib/pgsql/data/postgresql.conf
+#   environment:
+#     PGSETUP_INITDB_OPTIONS: "--auth-local=peer --auth-host=scram-sha-256"
+#   notify: restart postgresql
+
+- name: create tobira postgres user
+  become_user: postgres
+  community.postgresql.postgresql_user:
+    name: "{{ tobira_db_user }}"
+    password: "{{ tobira_db_password }}"
+
+- name: create database
+  become_user: postgres
+  community.postgresql.postgresql_db:
+    name: "{{ tobira_db }}"
+    owner: "{{ tobira_db_user }}"
+
+- name: enable PostgreSQL
+  service:
+    name: postgresql
+    enabled: yes

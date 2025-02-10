@@ -1,0 +1,20 @@
+---
+
+# Opencast
+opencast_admin_password: "{{ vault_opencast_admin_password }}"
+
+# DB
+tobira_db_host: localhost
+tobira_db_user: tobira
+tobira_db_password: "{{ vault_tobira_db_password }}"
+tobira_db: tobira
+
+# MeiliSearch
+tobira_meili_url: "https://github.com/meilisearch/meilisearch/releases/download/v1.12.8/meilisearch-linux-amd64"
+tobira_meili_checksum: "sha256:c325630ea967462e397899bb733a9fb599b89dcc112f8c5cb44d73ac0f16c553"
+tobira_meili_key: "{{ vault_tobira_meili_key }}"
+
+# Tobira
+tobira_binary_url: "https://github.com/elan-ev/tobira/releases/download/v3.0/tobira-x86_64-unknown-linux-musl"
+tobira_binary_checksum: "sha256:600785e9cdd690759cc78bbe8b03e4756a58a88135ee009dcb2692c040e2491a"
+tobira_trusted_external_key: "{{ vault_tobira_trusted_external_key }}"

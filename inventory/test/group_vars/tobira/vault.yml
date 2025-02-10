@@ -1,0 +1,6 @@
+---
+# TODO
+vault_opencast_admin_password: REPLACEME
+vault_tobira_db_password: REPLACEME
+vault_tobira_meili_key: REPLACEME
+vault_tobira_trusted_external_key: REPLACEME

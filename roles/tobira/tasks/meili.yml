@@ -1,0 +1,36 @@
+---
+# Sets up MeiliSearch, the search index for Tobira.
+
+- name: create MeiliSearch directory
+  file:
+    path: /opt/meili
+    state: directory
+    mode: '0755'
+
+- name: install MeiliSearch
+  get_url:
+    url: '{{ tobira_meili_url }}'
+    dest: /opt/meili/meilisearch
+    mode: '0755'
+    checksum: '{{ tobira_meili_checksum }}'
+  notify: restart meili
+
+- name: install MeiliSearch service file
+  template:
+    src: meili.service
+    dest: /etc/systemd/system/meili.service
+    mode: '0644'
+    owner: root
+    group: root
+  register: meili_service_install
+  notify: restart meili
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: true
+  when: meili_service_install is changed
+
+- name: enable Meili
+  service:
+    name: meili
+    enabled: true

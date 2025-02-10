@@ -1,0 +1,74 @@
+---
+- name: create tobira user
+  user:
+    name: tobira
+
+- name: create application and logging directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: tobira
+    group: tobira
+    mode: "0755"
+  loop:
+    - /opt/tobira
+    - /var/log/tobira
+
+- name: Deploy Tobira executable
+  get_url:
+    url: "{{ tobira_binary_url }}"
+    dest: /opt/tobira/tobira
+    owner: tobira
+    group: tobira
+    mode: "0755"
+    checksum: "{{ tobira_binary_checksum }}"
+  notify: restart tobira
+
+- name: Deploy assets
+  copy:
+    src: "{{ item }}"
+    dest: /opt/tobira/
+    owner: tobira
+    group: tobira
+    mode: "0644"
+  loop:
+    - logo-wide-light.svg
+    - logo-wide-dark.svg
+    - logo-narrow.svg
+    - favicon.svg
+  notify: restart tobira
+
+- name: Deploy configuration
+  template:
+    src: config.toml
+    dest: /opt/tobira/
+    owner: tobira
+    group: tobira
+    mode: "0644"
+  notify: restart tobira
+
+- name: install tobira service files
+  template:
+    src: "{{ item }}.service"
+    dest: /etc/systemd/system/{{ item }}.service
+    mode: "0644"
+    owner: root
+    group: root
+  loop:
+    - tobira
+    - tobira-worker
+  register: tobira_service_install
+  notify: restart tobira
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: true
+  when: tobira_service_install is changed
+
+- name: enable tobira
+  systemd:
+    name: "{{ item }}"
+    enabled: true
+  loop:
+    - tobira
+    - tobira-worker
